@@ -11,9 +11,7 @@ import cors from 'cors';
 const router =express.Router();
 router.use(cors());
 
-router.put('/api/projects/update:id',
-currentUser,
-requireAdminAuth,
+router.put('/api/projects/:id',
 [
   body('name')
   .trim()
@@ -26,14 +24,15 @@ validateRequest,
   const projectToUpdate = await Project.findById(req.params.id);
   const {name, organizationId} =req.body;
 
- 
+
+
   if(!projectToUpdate){
     throw new NotFoundError();
   }
 
-  if(projectToUpdate.userId !== req.currentUser!.id && req.currentUser!.isAdmin != true){
-   throw new NotAuthorizedError();
- }
+//   if(projectToUpdate.userId !== req.currentUser!.id && req.currentUser!.isAdmin != true){
+//    throw new NotAuthorizedError();
+//  }
 
  try {
    await projectToUpdate.set({

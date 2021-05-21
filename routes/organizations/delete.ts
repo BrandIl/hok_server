@@ -13,6 +13,7 @@ async (req:Request, res:Response)=> {
   const userToDelete = 
   await Organization.deleteOne({ _id: new mongo.ObjectId(req.params.id)});
 
+  res.setHeader('Access-Control-Expose-Headers', 'Content-Range');
   res.status(204).send(userToDelete);
   
   });

@@ -7,9 +7,8 @@ import { Program } from '../../models/program';
 const router =express.Router();
 router.use(cors());
 
-router.put('/api/programs/delete/:id',
-currentUser,
-requireAdminAuth,
+router.delete('/api/programs/:id',
+
 async (req:Request, res:Response)=> {
   const programToDelete = 
   await Program.deleteOne({ _id: new mongo.ObjectId(req.params.id)});

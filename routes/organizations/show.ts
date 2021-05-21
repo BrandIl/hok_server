@@ -16,7 +16,7 @@ const existingOrganization = await Organization.findById(req.params.id);
  if(!existingOrganization){
    throw new NotFoundError();
  }
-
+ res.setHeader('Access-Control-Expose-Headers', 'Content-Range');
   res.send(existingOrganization);
   
   });

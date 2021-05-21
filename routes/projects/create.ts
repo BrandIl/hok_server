@@ -13,9 +13,8 @@ import cors from 'cors';
 const router =express.Router();
 router.use(cors());
 
-router.post('/api/projects/create',
-currentUser,
-requireAdminAuth,
+router.post('/api/projects/',
+
 [
   body('name')
   .trim()
@@ -25,12 +24,14 @@ requireAdminAuth,
 validateRequest,
 
 async (req:Request, res:Response)=> {
-
+console.log("create project");
   const {name, organizationId} =req.body;
 
   const project =Project.build({name, organizationId}) ;
   
   await project.save();
+
+  res.setHeader('Access-Control-Expose-Headers', 'Content-Range');
 
   res.status(201).send(project);
   

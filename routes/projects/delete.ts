@@ -7,12 +7,13 @@ import { Project } from '../../models/project';
 const router =express.Router();
 router.use(cors());
 
-router.put('/api/projects/delete:id',
-currentUser,
-requireAdminAuth,
+router.delete('/api/projects/:id',
+
 async (req:Request, res:Response)=> {
   const projectToDelete = 
   await Project.deleteOne({ _id: new mongo.ObjectId(req.params.id)});
+
+  res.setHeader('Access-Control-Expose-Headers', 'Content-Range')
 
   res.status(204).send(projectToDelete);
   

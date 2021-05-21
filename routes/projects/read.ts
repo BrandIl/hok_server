@@ -1,24 +1,29 @@
-import express, {Request, Response} from 'express'
+import express, { Request, Response } from 'express'
 
-import {currentUser, requireAdminAuth} from '@hok/common';
+import { currentUser, requireAdminAuth } from '@hok/common';
 import { Project } from '../../models/project';
 
 import cors from 'cors';
 
 
-const router =express.Router();
+const router = express.Router();
 router.use(cors());
 
 router.get('/api/projects/',
-currentUser,
-requireAdminAuth,
-async (req:Request, res:Response)=> {
 
-  const users = await Project.find({});
+  async (req: Request, res: Response) => {
+
+    let { sort, filter } = req.query;
+    sort = sort == undefined ? {} : [JSON.parse(req.query.sort as string) || {}];
+    filter = filter == undefined ? {} : JSON.parse(req.query.filter as string);
+
+    const projects = await Project.find(filter as object).sort(sort as object).populate('organizationId');
 
 
-  res.send(users);
-  
+    res.setHeader('Access-Control-Expose-Headers', 'Content-Range')
+    res.setHeader('Content-Range', 'projects 0-5/5');
+    res.send(projects);
+
   });
 
-export {router as readProjectsRouter}
+export { router as readProjectsRouter }

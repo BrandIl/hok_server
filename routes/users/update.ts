@@ -32,7 +32,7 @@ validateRequest,
  
   const userToUpdate = await User.findById(req.params.id);
   const {name,email,password ,isAdmin} = req.body;
-  const userWithSameEmail =  await User.find({email: email});
+  const userWithSameEmail  = await User.findOne({email: email});
 
   if(!userToUpdate){
     throw new NotFoundError();

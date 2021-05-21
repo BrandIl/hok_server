@@ -19,7 +19,6 @@
   "author": "",
   "license": "ISC",
   "dependencies": {
-    "@hok/common": "^1.0.25",
     "@types/cookie-session": "^2.0.39",
     "@types/cors": "^2.8.9",
     "@types/express": "^4.17.3",
@@ -37,6 +36,7 @@
     "typescript": "^3.8.3"
   },
   "devDependencies": {
+    "@hok/common": "^1.0.34",
     "@types/jest": "^25.2.1",
     "@types/supertest": "^2.0.8",
     "jest": "^25.2.7",

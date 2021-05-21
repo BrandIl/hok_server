@@ -1,68 +1,71 @@
-import express, {Request, Response} from 'express'
+import express, { Request, Response } from 'express'
 import { body } from 'express-validator'
 import jwt from 'jsonwebtoken'
-import {validateRequest,BadRequestError } from '@hok/common';
+import { validateRequest, BadRequestError, currentUser } from '@hok/common';
 
-import {Password} from  '../../services/password';
-import {User } from  '../../models/user';
+import { Password } from '../../services/password';
+import { User } from '../../models/user';
 import cors from 'cors';
 
 
-const router =express.Router();
+const router = express.Router();
 router.use(cors());
 
 
 router.post('/api/auth/signin',
-[
-  body('email')
-  .isEmail()
-  .withMessage('Email must be valid'),
+  [
+    body('email')
+      .isEmail()
+      .withMessage('Email must be valid'),
 
-  body('password')
-   .trim()
-   .notEmpty()
-   .withMessage('You must supply a password')
+    body('password')
+      .trim()
+      .notEmpty()
+      .withMessage('You must supply a password')
 
-],
-validateRequest,
- async (req:Request, res:Response)=> {
- 
- const {email, password} =req.body;
+  ],
+  validateRequest,
 
- console.log('existingUser1');
+  async (req: Request, res: Response) => {
 
- const existingUser = await User.findOne({email});
- console.log('existingUser');
- if(!existingUser){
-   throw new BadRequestError('Invalid credentials')
- }
- console.log('existingUser1');
+    const { email, password } = req.body;
 
- const passwordsMatch =await Password.compare(
-   existingUser.password,
-   password
-   );
+    const existingUser = await User.findOne({ email });
+    console.log('existingUser');
+    if (!existingUser) {
+      throw new BadRequestError('Invalid credentials')
+    }
 
-   if(!passwordsMatch ){
-    throw new BadRequestError('Invalid credentials')
-   }
+    const passwordsMatch = await Password.compare(
+      existingUser.password,
+      password
+    );
+
+    if (!passwordsMatch) {
+      throw new BadRequestError('Invalid credentials')
+    }
 
 
-   const userJwt = jwt.sign({
-      id:existingUser.id,
+    const userJwt = jwt.sign({
+      id: existingUser.id,
       email: existingUser.email,
-    isAdmin:existingUser.isAdmin
+      isAdmin: existingUser.isAdmin
 
-   },
+    },
       process.env.JWT_KEY!
-   );
-   req.headers.authorization =userJwt;
+    );
 
-   req.session = {
-     jwt:userJwt
-   };
+    req.headers.authorization = userJwt;
 
-   res.status(200).send(existingUser);
-});
+    req.session = {
+      jwt: userJwt
+    };
 
-export {router as signinRouter}
+    req.headers.authorization = JSON.stringify({ jwt: userJwt });
+
+    res.status(200).send({
+      jwt: userJwt
+    });
+  });
+
+export { router as signinRouter }

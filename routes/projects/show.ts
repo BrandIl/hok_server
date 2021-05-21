@@ -9,9 +9,9 @@ import cors from 'cors';
 const router =express.Router();
 router.use(cors());
 
-router.get('/api/projects/show/:id',
+router.get('/api/projects/:id',
 
-requireAdminAuth,
+
 async (req:Request, res:Response)=> {
 
 const existingProject = await Project.findById(req.params.id);
@@ -21,7 +21,8 @@ const existingProject = await Project.findById(req.params.id);
  }
 
  console.log(existingProject);
-
+ res.setHeader('Access-Control-Expose-Headers', 'Content-Range')
+ res.setHeader('Content-Range', 'users 0-5/5');
   res.send(existingProject);
   
   });
