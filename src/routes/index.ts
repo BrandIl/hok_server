@@ -26,6 +26,13 @@ export * from './programs/delete';
 export * from './programs/read';
 export * from './programs/show';
 
+//payments routes
+export * from './payments/create';
+export * from './payments/update';
+export * from './payments/delete';
+export * from './payments/read';
+export * from './payments/show';
+
 //customers routes
 export * from './customers/create';
 export * from './customers/update';

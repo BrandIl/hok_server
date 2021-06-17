@@ -6,7 +6,7 @@ import { User } from '../../models';
 const router = express.Router();
 
 
-router.get('/api/users/:id',
+router.get('/api/payments/:id',
   currentUser,
   requireAdminAuth,
   async (req: Request, res: Response) => {
@@ -20,4 +20,4 @@ router.get('/api/users/:id',
 
   });
 
-export { router as showUserRouter }
+export { router as showPaymentRouter }

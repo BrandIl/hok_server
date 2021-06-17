@@ -1,27 +1,26 @@
 import express, { Request, Response } from 'express'
 
-import { currentUser, requireAdminAuth } from '../../middlewares';
-import { User } from '../../models';
+import { currentUser, requireAdminAuth, requireAuth } from '../../middlewares';
+import { Payment, User } from '../../models';
 import cors from 'cors';
 import { JsonWebTokenError } from 'jsonwebtoken';
 
 const router = express.Router();
 
 
-router.get('/api/users/',
+router.get('/api/payments/',
   currentUser,
-  requireAdminAuth,
+  requireAuth,
   async (req: Request, res: Response) => {
 
     let { sort, filter } = req.query;
     sort = sort == undefined ? {} : [JSON.parse(req.query.sort as string) || {}];
     filter = sort == undefined ? {} : JSON.parse(req.query.filter as string);
 
-    const users = await User.find(filter as object).sort({});
+    const payments = await Payment.find(filter as object).sort({});
 
-    res.setHeader('Content-Range', `users 0-5/${users.length}`);
-
-    res.send(users);
+    res.setHeader('Content-Range', `payments 0-${payments.length}/${payments.length}`);
+    res.send(payments);
   });
 
-export { router as readUsersRouter }
+export { router as readPaymentsRouter }

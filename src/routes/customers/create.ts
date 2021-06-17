@@ -25,7 +25,6 @@ router.post('/api/customers',
   validateRequest,
 
   async (req: Request, res: Response) => {
-    ;
     const { identity, firstName, lastName, communication, organizationId } = req.body;
 
     if (!req.currentUser!.organizations.includes(organizationId) && !req.currentUser!.isAdmin) {

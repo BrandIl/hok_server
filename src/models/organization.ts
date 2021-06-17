@@ -40,12 +40,6 @@ export interface OrganizationAttrs {
         branchId: number
         accountNumber: string;
       }
-      ;
-      creditCard: {
-        creditNumber: number;
-        expiringDate: string;
-        cvv2: string;
-      };
     }
   };
 }
@@ -92,11 +86,6 @@ interface OrganizationDoc extends mongoose.Document {
         accountNumber: string;
       }
       ;
-      creditCard: {
-        creditNumber: number;
-        expiringDate: string;
-        cvv2: string;
-      };
     }
   };
 }
@@ -145,11 +134,6 @@ const OrganizationSchema = new mongoose.Schema({
         branchId: { type: Number, default: "475" },
         accountNumber: { type: String, default: "130863" },
       },
-      creditCard: {
-        creditNumber: { type: String, default: "123456123456" },
-        expiringDate: { type: String, default: "12/26" },
-        cvv2: { type: String, default: "977" },
-      }
     }
   },
 

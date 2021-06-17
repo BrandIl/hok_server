@@ -10,24 +10,11 @@ import { BadRequestError, NotAuthorizedError, NotFoundError } from '../../errors
 const router = express.Router();
 
 
-router.put('/api/users/:id',
+router.put('/api/payments/:id',
   currentUser,
   requireAdminAuth,
   [
-    body('name')
-      .trim()
-      .isLength({ min: 4, max: 50 })
-      .withMessage('Name must be between 4 and 50 characters'),
-    body('email')
-      .isEmail()
-      .withMessage('Email must be valid'),
-    body('password')
-      .trim()
-      .isLength({ min: 4, max: 20 })
-      .withMessage('Password must be between 4 and 20 characters'),
-    body('isAdmin')
-      .isBoolean()
-      .withMessage('isAdmin nust be boolean'),
+
 
   ],
   validateRequest,
@@ -61,9 +48,9 @@ router.put('/api/users/:id',
     }
 
 
-    res.setHeader('Content-Range', 'users 0-5/5');
+    res.setHeader('Content-Range', 'payments 0-5/5');
 
     res.send(userToUpdate);
   });
 
-export { router as updateUserRouter }
+export { router as updatePaymentRouter }

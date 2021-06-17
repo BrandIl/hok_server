@@ -20,6 +20,7 @@ router.post('/api/projects/',
   ],
   validateRequest,
 
+
   async (req: Request, res: Response) => {
     const { name, organizationId } = req.body;
     if (!req.currentUser!.organizations.includes(organizationId) && !req.currentUser!.isAdmin) {
@@ -28,7 +29,7 @@ router.post('/api/projects/',
 
     try {
       const isExists = await Project.find({ name, organizationId });
-      if (isExists)
+      if (isExists.length !== 0)
         throw new BadRequestError("Project with this name is already exists. You have to use in a uniqe name");
     }
     catch (error) {

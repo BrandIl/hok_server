@@ -32,9 +32,9 @@ router.put('/api/users/:id',
   ],
   validateRequest,
   async (req: Request, res: Response) => {
-
+    debugger;
     const userToUpdate = await User.findById(req.params.id);
-    const { name, email, password, isAdmin } = req.body;
+    const { name, email, isAdmin, organizations } = req.body;
     const userWithSameEmail = await User.findOne({ email: email });
 
     if (!userToUpdate) {
@@ -52,7 +52,7 @@ router.put('/api/users/:id',
 
     try {
       await userToUpdate.set({
-        name, email, password, isAdmin
+        name, email, isAdmin, organizations
       });
 
       await userToUpdate.save();
@@ -60,8 +60,6 @@ router.put('/api/users/:id',
       console.error(error);
     }
 
-
-    res.setHeader('Content-Range', 'users 0-5/5');
 
     res.send(userToUpdate);
   });

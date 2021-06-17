@@ -28,10 +28,10 @@ router.post('/api/programs/',
       return new NotAuthorizedError();
     }
 
-    const { customerId, sum, startDate, endDate, numOfPayments, launchDay, paymentMethod, organizationId, projectId } = req.body;
+    const { customerId, sum, startDate, endDate, numOfPayments, launchDay, isActive, paymentMethod, organizationId, projectId } = req.body;
 
 
-    const program = Program.build({ sum, startDate, endDate, numOfPayments, launchDay, paymentMethod, organizationId, projectId, customerId });
+    const program = Program.build({ sum, startDate, endDate, numOfPayments, launchDay, isActive, paymentMethod, organizationId, projectId, customerId });
 
 
     await program.save();

@@ -5,7 +5,7 @@ import { User } from '../../models';
 
 const router = express.Router();
 
-router.delete('/api/users/:id',
+router.delete('/api/payments/:id',
   currentUser,
   requireAdminAuth,
   async (req: Request, res: Response) => {
@@ -16,4 +16,4 @@ router.delete('/api/users/:id',
 
   });
 
-export { router as deleteUserRouter }
+export { router as deletePaymentRouter }

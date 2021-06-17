@@ -17,10 +17,8 @@ router.get('/api/programs/',
     filter = filter == undefined ? {} : JSON.parse(req.query.filter as string);
 
     const programs = await Program.find(filter as object).sort(sort as object);
-    // .populate('organizationId').populate('projectId').populate('customerId')
 
-
-    res.setHeader('Content-Range', 'users 0-5/5');
+    res.setHeader('Content-Range', `programs 0-1/${programs.length}}`);
     res.send(programs);
 
   });

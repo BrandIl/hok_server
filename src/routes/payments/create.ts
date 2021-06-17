@@ -6,7 +6,7 @@ import {
 } from '../../middlewares';
 import { body } from 'express-validator';
 
-import { User } from '../../models';
+import { Payment, User } from '../../models';
 import cors from 'cors';
 import { BadRequestError } from '../../errors';
 
@@ -15,7 +15,7 @@ import { BadRequestError } from '../../errors';
 const router = express.Router();
 
 
-router.post('/api/users/',
+router.post('/api/payments/',
   currentUser,
   requireAdminAuth,
   [
@@ -41,9 +41,9 @@ router.post('/api/users/',
 
     const { name, email, password, isAdmin, organizations } = req.body;
 
-    const existingUser = await User.findOne({ email });
+    const existingPayment = await Payment.findOne({ email });
 
-    if (existingUser) {
+    if (existingPayment) {
       throw new BadRequestError('Email in use');
     }
 
@@ -61,4 +61,4 @@ router.post('/api/users/',
   }
 );
 
-export { router as createUserRouter }
+export { router as createPaymentRouter }

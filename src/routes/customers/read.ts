@@ -21,7 +21,7 @@ router.get('/api/customers/',
       .sort(sort as object);
 
     ;
-    res.setHeader('Content-Range', 'customers 0-5/5');
+    res.setHeader('Content-Range', `customers 0-5/${customers.length}`);
     res.send(customers);
 
   });

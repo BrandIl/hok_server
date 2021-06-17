@@ -30,6 +30,11 @@ import {
   updateOrganizationRouter,
   updateProgramRouter,
   updateProjectRouter,
+  createPaymentRouter,
+  deletePaymentRouter,
+  readPaymentsRouter,
+  showPaymentRouter,
+  updatePaymentRouter,
   createUserRouter,
   deleteUserRouter,
   readUsersRouter,
@@ -81,6 +86,12 @@ app.use(readProjectsRouter);
 app.use(updateProjectRouter);
 app.use(deleteProjectRouter);
 app.use(showProjectRouter);
+
+app.use(createPaymentRouter);
+app.use(readPaymentsRouter);
+app.use(updatePaymentRouter);
+app.use(deletePaymentRouter);
+app.use(showPaymentRouter);
 
 app.use(createUserRouter);
 app.use(readUsersRouter);

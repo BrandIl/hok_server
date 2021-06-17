@@ -16,12 +16,8 @@ export interface ProgramAttrs {
       branchId: string;
       accountNumber: string;
     }
-    creditCard: {
-      creditNumber: number;
-      expiringDate: string;
-      cvv2: string;
-    }
   },
+  isActive: boolean,
   organizationId: typeof Organization,
   projectId: typeof Project,
   customerId: typeof Customer
@@ -39,12 +35,8 @@ interface ProgramDoc extends mongoose.Document {
       branchId: string;
       accountNumber: string;
     },
-    creditCard: {
-      creditNumber: number;
-      expiringDate: string;
-      cvv2: string;
-    }
   },
+  isActive: boolean,
   organizationId: typeof Organization,
   projectId: typeof Project,
   customerId: typeof Customer
@@ -65,13 +57,9 @@ const ProgramSchema = new mongoose.Schema({
       bankId: { type: String, required: true },
       branchId: { type: String, required: true },
       accountNumber: { type: String, required: true },
-    },
-    creditCard: {
-      creditNumber: { type: String, required: true },
-      expiringDate: { type: String, required: true },
-      cvv2: { type: String, required: true }
     }
   },
+  isActive: { type: Boolean, default: true },
   organizationId: { type: mongoose.Types.ObjectId, ref: 'Organization', required: true },
   projectId: { type: mongoose.Types.ObjectId, ref: 'Project', required: true },
   customerId: { type: mongoose.Schema.Types.ObjectId, ref: 'Customer', required: true }

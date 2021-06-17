@@ -62,21 +62,17 @@ const CustomerSchema = new mongoose.Schema({
   communication: {
     address: {
       city: {
-        zip: { type: String, length: 7, validate: /[0-9]/, default: "4081805" },
-        name: { type: String, default: "אלעד" },
+        zip: { type: String, length: 8, validate: /[0-9]/, required: true },
+        name: { type: String, required: true },
       },
       street: {
-        name: { type: String, length: 8, default: "התור" },
-        number: { type: String, length: 8, default: "9" },
+        name: { type: String, required: true },
+        number: { type: String, required: true },
       }
     },
-    concat
-      : {
-      name: { type: String, default: "משה" },
-      celular: { type: String, default: "0504149062" },
-      email: { type: String, default: "a0504149062@gmail.com" },
-      remarks: { type: String, default: "------" },
-    },
+    celular: { type: String, required: true },
+    email: { type: String, required: true },
+    remarks: { type: String },
   },
   organizationId: { type: mongoose.Types.ObjectId, ref: 'Organization', required: true },
 }
