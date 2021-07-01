@@ -2,8 +2,8 @@ import express, { Request, Response } from 'express'
 
 import { currentUser, requireAdminAuth } from '../../middlewares';
 import { User } from '../../models';
-import cors from 'cors';
-import { JsonWebTokenError } from 'jsonwebtoken';
+import { queryString } from '../../services/queryString';
+
 
 const router = express.Router();
 
@@ -13,13 +13,13 @@ router.get('/api/users/',
   requireAdminAuth,
   async (req: Request, res: Response) => {
 
-    let { sort, filter } = req.query;
-    sort = sort == undefined ? {} : [JSON.parse(req.query.sort as string) || {}];
-    filter = sort == undefined ? {} : JSON.parse(req.query.filter as string);
+    let { sort, filter, skip, limit, start, end } = queryString(req.query);
 
-    const users = await User.find(filter as object).sort({});
 
-    res.setHeader('Content-Range', `users 0-5/${users.length}`);
+    const users = await User.find(filter).sort(sort).skip(skip).limit(limit);
+    const total = await User.find(filter).countDocuments();
+
+    res.setHeader('Content-Range', `users ${start + 1}-${end + 1}/${total}`);
 
     res.send(users);
   });

@@ -2,12 +2,14 @@ import mongoose from 'mongoose';
 import { Organization } from './organization';
 import { Project } from './project';
 import { Customer } from './customer';
+import autoIncrement from 'mongoose-auto-increment';
+import { transpileModule } from 'typescript';
 
 
 export interface ProgramAttrs {
   sum: string;
-  startDate: Date;
-  endDate: Date;
+  startDate: string;
+  endDate: string;
   numOfPayments: number;
   launchDay: number;
   paymentMethod: {
@@ -25,8 +27,8 @@ export interface ProgramAttrs {
 
 interface ProgramDoc extends mongoose.Document {
   sum: string;
-  startDate: Date;
-  endDate: Date;
+  startDate: string;
+  endDate: string;
   numOfPayments: number;
   launchDay: number;
   paymentMethod: {
@@ -48,8 +50,8 @@ interface ProgramModel extends mongoose.Model<any> {
 
 const ProgramSchema = new mongoose.Schema({
   sum: { type: Number, required: true },
-  startDate: { type: Date, required: true },
-  endDate: { type: Date, required: true },
+  startDate: { type: String, required: true },
+  endDate: { type: String, required: true },
   numOfPayments: { type: Number, required: true },
   launchDay: { type: Number, required: true },
   paymentMethod: {
@@ -62,24 +64,33 @@ const ProgramSchema = new mongoose.Schema({
   isActive: { type: Boolean, default: true },
   organizationId: { type: mongoose.Types.ObjectId, ref: 'Organization', required: true },
   projectId: { type: mongoose.Types.ObjectId, ref: 'Project', required: true },
-  customerId: { type: mongoose.Schema.Types.ObjectId, ref: 'Customer', required: true }
+  customerId: { type: mongoose.Schema.Types.ObjectId, ref: 'Customer', required: true },
+  ordinalNumber: { type: Number, require: true }
 }
   , {
     toJSON: {
       transform(doc, ret) {
         ret.id = ret._id;
         delete ret._id;
+        delete ret.__v;
       }
     }
   });
+
 
 
 ProgramSchema.statics.build = (attrs: ProgramAttrs) => {
   console.log(attrs);
   return new Program(attrs);
 };
-
-
+ProgramSchema.plugin(autoIncrement.plugin, {
+  model: 'Program',
+  field: 'ordinalNumber',
+  startAt: 300000000,
+  incrementBy: 1
+});
 const Program = mongoose.model<ProgramDoc, ProgramModel>('Program', ProgramSchema);
+
+
 
 export { Program };

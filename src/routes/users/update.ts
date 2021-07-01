@@ -3,7 +3,7 @@ import { body } from 'express-validator'
 
 import { User } from '../../models'
 import cors from 'cors';
-import { currentUser, requireAdminAuth, validateRequest } from '../../middlewares';
+import { currentUser, requireAdminAuth, requireAuth, validateRequest } from '../../middlewares';
 import { BadRequestError, NotAuthorizedError, NotFoundError } from '../../errors';
 
 
@@ -21,10 +21,6 @@ router.put('/api/users/:id',
     body('email')
       .isEmail()
       .withMessage('Email must be valid'),
-    body('password')
-      .trim()
-      .isLength({ min: 4, max: 20 })
-      .withMessage('Password must be between 4 and 20 characters'),
     body('isAdmin')
       .isBoolean()
       .withMessage('isAdmin nust be boolean'),
@@ -32,7 +28,6 @@ router.put('/api/users/:id',
   ],
   validateRequest,
   async (req: Request, res: Response) => {
-    debugger;
     const userToUpdate = await User.findById(req.params.id);
     const { name, email, isAdmin, organizations } = req.body;
     const userWithSameEmail = await User.findOne({ email: email });

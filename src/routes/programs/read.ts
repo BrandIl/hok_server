@@ -1,24 +1,33 @@
 import express, { Request, Response } from 'express'
+import { currentUser, requireAuth } from '../../middlewares';
 
-import { currentUser, requireAdminAuth } from '../../middlewares';
 import { Program } from '../../models';
-import cors from 'cors';
+import { queryString } from '../../services/queryString';
+
 
 
 const router = express.Router();
 
 
 router.get('/api/programs/',
+  currentUser,
+  requireAuth,
 
   async (req: Request, res: Response) => {
 
-    let { sort, filter } = req.query;
-    sort = sort == undefined ? {} : [JSON.parse(req.query.sort as string) || {}];
-    filter = filter == undefined ? {} : JSON.parse(req.query.filter as string);
+    let { sort, filter, skip, limit, start, end } = queryString(req.query);
 
-    const programs = await Program.find(filter as object).sort(sort as object);
+    if (!req.currentUser!.isAdmin && !filter.organizationId) {
+      filter.organizationId = { $in: req.currentUser!.organizations }
+    }
 
-    res.setHeader('Content-Range', `programs 0-1/${programs.length}}`);
+    const programs = await Program.find(filter as object).sort(sort as object).skip(skip).limit(limit);
+
+
+    const total = await Program.find(filter as object).sort(sort as object).countDocuments();
+
+    res.setHeader('Content-Range', `programs ${start + 1}-${end + 1}/${total}`);
+
     res.send(programs);
 
   });

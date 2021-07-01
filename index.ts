@@ -3,6 +3,9 @@ import mongoose from 'mongoose'
 import { app } from './app'
 import dotenv from 'dotenv'
 import autoIncrement from 'mongoose-auto-increment';
+import schedule from 'node-schedule';
+import { AutomaticCollection } from './src/services/tryAoutumations';
+
 
 const start = async () => {
   console.log('Starting up...');
@@ -13,7 +16,6 @@ const start = async () => {
   if (!process.env.MONGO_URI) {
     throw new Error('MONGO_URI must be defined');
   }
-
   if (!process.env.PORT) {
     throw new Error('PORT must be defined');
   }
@@ -24,6 +26,8 @@ const start = async () => {
       useCreateIndex: true
     });
 
+    autoIncrement.initialize(mongoose.connection);
+
 
     console.log('Connected to mongoDB');
   } catch (error) {
@@ -33,6 +37,8 @@ const start = async () => {
   app.listen(process.env.PORT, () => {
     console.log(`Listening on port ${process.env.PORT}!!`);
   });
+
+  AutomaticCollection();
 
 };
 

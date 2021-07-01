@@ -1,8 +1,9 @@
 import express, { Request, Response } from 'express'
 
-import { currentUser, requireAdminAuth } from '../../middlewares';
+import { currentUser, requireAdminAuth, requireAuth } from '../../middlewares';
 import { Customer } from '../../models/customer';
-import cors from 'cors';
+import { queryString } from '../../services/queryString';
+
 
 
 const router = express.Router();
@@ -10,18 +11,21 @@ const router = express.Router();
 
 router.get('/api/customers/',
   currentUser,
-  // requireAdminAuth,
+  requireAuth,
   async (req: Request, res: Response) => {
+    let { sort, filter, skip, limit, start, end } = queryString(req.query);
 
-    let { sort, filter } = req.query;
-    sort = sort == undefined ? {} : [JSON.parse(req.query.sort as string) || {}];
-    filter = filter == undefined ? {} : JSON.parse(req.query.filter as string);
+    if (!req.currentUser!.isAdmin && !filter.organizationId) {
+      filter.organizationId = { $in: req.currentUser!.organizations }
+    }
 
-    const customers = await Customer.find(filter as object)
-      .sort(sort as object);
 
-    ;
-    res.setHeader('Content-Range', `customers 0-5/${customers.length}`);
+    const customers = await Customer.find(filter).sort(sort).sort(sort).skip(skip).limit(limit);
+
+    const total = await Customer.find(filter).countDocuments();
+
+    res.setHeader('Content-Range', `customers ${start + 1}-${end + 1}/${total}`);
+
     res.send(customers);
 
   });

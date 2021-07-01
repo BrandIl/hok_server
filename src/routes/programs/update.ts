@@ -13,30 +13,20 @@ const router = express.Router();
 router.put('/api/programs/:id',
   currentUser,
   requireAuth,
-  // [
-  //   body('customerName')
-  //     .trim()
-  //     .isLength({ min: 4, max: 50 })
-  //     .withMessage('Name must be between 4 and 50 characters'),
-  // ],
+
   validateRequest,
   async (req: Request, res: Response) => {
-
     if (!req.currentUser!.organizations.includes(req.params.id) && !req.currentUser!.isAdmin) {
       return new NotAuthorizedError();
     }
     const programToUpdate = await Program.findById(req.params.id);
-    const { customerId, sum, startDate, numOfPayments, launchDay, paymentMethod, organizationId, projectId } = req.body;
-
 
     if (!programToUpdate) {
       throw new NotFoundError();
     }
 
     try {
-      await programToUpdate.set({
-        customerId, sum, startDate, numOfPayments, launchDay, paymentMethod, organizationId, projectId
-      });
+      await programToUpdate.set(req.body);
 
       await programToUpdate.save();
     } catch (error) {

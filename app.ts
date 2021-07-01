@@ -42,6 +42,9 @@ import {
   updateUserRouter,
   deleteManyOrganizationRouter
 } from './src/routes';
+import { getPdfReportRouter } from './src/routes/reports/getReport';
+import { getFormAsPDFByIdRouter } from './src/routes/reports/createCollectionReportRouterts';
+import { sendPdfReportRouter } from './src/routes/reports/postReport';
 
 
 
@@ -101,9 +104,20 @@ app.use(showUserRouter);
 
 app.use(createArrgFileRouter);
 
+app.use(getPdfReportRouter);
+app.use(getFormAsPDFByIdRouter);
+app.use(sendPdfReportRouter);
+
+
+
+
+
+
 app.all('*', async () => {
   throw new NotFoundError();
 });
 app.use(errorHandler);
 
 export { app };
+
+

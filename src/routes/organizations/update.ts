@@ -18,7 +18,6 @@ router.put('/api/organizations/:id',
   ],
   validateRequest,
   async (req: Request, res: Response) => {
-
     const organizationToUpdate = await Organization.findById(req.params.id);
 
     if (!organizationToUpdate) {

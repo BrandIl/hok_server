@@ -19,13 +19,15 @@ interface ProjectModel extends mongoose.Model<any> {
 
 const ProjectSchema = new mongoose.Schema({
   name: { type: String, required: true },
-  organizationId: { type: mongoose.Schema.Types.ObjectId, ref: 'Organization', required: true }
+  organizationId: { type: mongoose.Schema.Types.ObjectId, ref: 'Organization', required: true },
+  ordinalNumber: { type: Number, require: true }
 }
   , {
     toJSON: {
       transform(doc, ret) {
         ret.id = ret._id;
         delete ret._id;
+        delete ret.__v;
       }
     }
   });
@@ -34,6 +36,13 @@ const ProjectSchema = new mongoose.Schema({
 ProjectSchema.statics.build = (attrs: ProjectAttrs) => {
   return new Project(attrs);
 };
+ProjectSchema.plugin(autoIncrement.plugin, {
+  model: 'Project',
+  field: 'ordinalNumber',
+  startAt: 200,
+  incrementBy: 1
+});
+
 
 const Project = mongoose.model<ProjectDoc, ProjectModel>('Project', ProjectSchema);
 

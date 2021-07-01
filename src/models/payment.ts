@@ -16,7 +16,7 @@ interface PaymentAttrs {
             accountNumber: string;
         }
     },
-    status: string,
+    status: boolean,
     organizationId: typeof Organization,
     projectId: typeof Project,
     customerId: typeof Customer
@@ -33,7 +33,7 @@ interface PaymentDoc extends mongoose.Document {
             accountNumber: string;
         }
     },
-    status: string,
+    status: boolean,
     organizationId: typeof Organization,
     projectId: typeof Project,
     customerId: typeof Customer,
@@ -54,11 +54,13 @@ const PaymentSchema = new mongoose.Schema({
             accountNumber: { type: String, required: true, length: 6 },
         }
     },
-    status: { type: String, enum: StatusEnum, required: true },
+    status: { type: Boolean, required: true },
     organizationId: { type: mongoose.Schema.Types.ObjectId, ref: 'Organization', required: true },
     projectId: { type: mongoose.Schema.Types.ObjectId, ref: 'Project', required: true },
     customerId: { type: mongoose.Schema.Types.ObjectId, ref: 'Customer', required: true },
-    programId: { type: mongoose.Schema.Types.ObjectId, ref: 'Program', required: true }
+    programId: { type: mongoose.Schema.Types.ObjectId, ref: 'Program', required: true },
+    ordinalNumber: { type: Number, require: true }
+
 
 }
     , {
@@ -74,7 +76,12 @@ const PaymentSchema = new mongoose.Schema({
 PaymentSchema.statics.build = (attrs: PaymentAttrs) => {
     return new Payment(attrs);
 };
-
+PaymentSchema.plugin(autoIncrement.plugin, {
+    model: 'Payment',
+    field: 'ordinalNumber',
+    startAt: 500000000000,
+    incrementBy: 1
+});
 const Payment = mongoose.model<PaymentDoc, PaymentModel>('Payment', PaymentSchema);
 
 

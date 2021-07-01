@@ -1,5 +1,7 @@
 import mongoose from 'mongoose';
 import { Organization } from './organization';
+import autoIncrement from 'mongoose-auto-increment';
+
 
 interface CustomerAttrs {
   identity: string;
@@ -75,12 +77,16 @@ const CustomerSchema = new mongoose.Schema({
     remarks: { type: String },
   },
   organizationId: { type: mongoose.Types.ObjectId, ref: 'Organization', required: true },
+  ordinalNumber: { type: Number, require: true }
+
 }
   , {
     toJSON: {
       transform(doc, ret) {
         ret.id = ret._id;
         delete ret._id;
+        delete ret.__v;
+
       }
     }
   });
@@ -90,7 +96,16 @@ CustomerSchema.statics.build = (attrs: CustomerAttrs) => {
   return new Customer(attrs);
 };
 
+autoIncrement.initialize(mongoose.connection);
+CustomerSchema.plugin(autoIncrement.plugin, {
+  model: 'Customer',
+  field: 'ordinalNumber',
+  startAt: 100000000,
+  incrementBy: 1
+});
+
 const Customer = mongoose.model<CustomerDoc, CustomerModel>('Customer', CustomerSchema);
+
 
 
 export { Customer };

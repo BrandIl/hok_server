@@ -7,6 +7,7 @@ import {
 import { body } from 'express-validator';
 import { Organization } from '../../models';
 import { BadRequestError } from '../../errors';
+import { createOrganization, getOneOrganization } from '../../controllers/organizations/read';
 
 const router = express.Router();
 router.post('/api/organizations/',
@@ -23,11 +24,11 @@ router.post('/api/organizations/',
   async (req: Request, res: Response) => {
     const { name, communication, masavData, paymentAgreement } = req.body;
     try {
-      const isExists = await Organization.findOne({ name });
-      if (isExists)
+      const isExists = await getOneOrganization({ name: name });
+      if (isExists) {
         throw new BadRequestError("Organization with this name is already exists You have to use in a uniqe name");
-      const organization = Organization.build({ name, communication, masavData, paymentAgreement });
-      await organization.save();
+      }
+      const organization = createOrganization({ name, communication, masavData, paymentAgreement });
       res.status(201).send(organization);
     } catch (error) {
       throw new BadRequestError(error);

@@ -11,8 +11,9 @@ import cors from 'cors';
 const router = express.Router();
 
 
-router.put('/api/customer/:id',
-  //currentUser,
+router.put('/api/customers/:id',
+  currentUser,
+  requireAuth,
   //requireAdminAuth,
   [
     body('firstName')
@@ -22,7 +23,6 @@ router.put('/api/customer/:id',
   ],
   validateRequest,
   async (req: Request, res: Response) => {
-
     const customerToUpdate = await Customer.findById(req.params.id);
     const { identity, firstName, lastName, communication, organizationId } = req.body;
 
