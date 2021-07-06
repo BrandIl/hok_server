@@ -1,5 +1,7 @@
 import schedule from 'node-schedule';
 import { collection } from './collection';
+import dateformat from 'dateformat';
+
 
 export const AutomaticCollection = () => {
     const rule = new schedule.RecurrenceRule();
@@ -26,8 +28,10 @@ export const AutomaticCollection = () => {
     // current seconds
     let seconds = date_ob.getSeconds();
 
+    dateformat(date_ob, "mm/yy")
+
     const job = schedule.scheduleJob(rule, () => {
-        collection(15);
+        collection(new Date());
         console.log(year + "-" + month + "-" + date + " " + hours + ":" + minutes + ":" + seconds + 'Automatic collection performed successfully');
     });
 }

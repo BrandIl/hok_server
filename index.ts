@@ -19,6 +19,7 @@ const start = async () => {
   if (!process.env.PORT) {
     throw new Error('PORT must be defined');
   }
+  const PORT = process.env.PORT || 4000;
   try {
     const connection = await mongoose.connect(process.env.MONGO_URI, {
       useNewUrlParser: true,
@@ -34,7 +35,7 @@ const start = async () => {
     console.log('failed connecting');
     console.log(error);
   }
-  app.listen(process.env.PORT, () => {
+  app.listen(PORT, () => {
     console.log(`Listening on port ${process.env.PORT}!!`);
   });
 

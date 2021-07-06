@@ -12,7 +12,17 @@ export const queryString = (query: any) => {
     let end = (range as Array<any>)[1];
 
     if (Array.isArray(filter.id)) {
-        filter = { _id: { $in: filter['id'] } }
+        filter['_id'] = { $in: filter['id'] }
+    }
+
+    if (filter.collectionDate) {
+        const date1 = new Date(filter.collectionDate);
+        const date = new Date(filter.collectionDate);
+
+        filter['collectionDate'] = {
+            $gte: date1,
+            $lt: new Date(date.setDate(date.getDate() + 1))
+        }
     }
     const options = ['name', 'lastName'];
 

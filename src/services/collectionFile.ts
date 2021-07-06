@@ -1,17 +1,36 @@
-import http from 'http';
-import fs from 'fs';
+import dateformat from 'dateformat';
+import { Agreement } from '.';
+import { Organization, Program } from '../models';
 
 
-const download = (url: any, dest: any, cb: any) => {
-    var file = fs.createWriteStream(dest);
-    var request = http.get(url, function (response) {
-        response.pipe(file);
-        file.on('finish', function () {
-            file.close(cb);  // close() is async, call cb after close completes.
+export const collectionFile = async (launchDate: Date) => {
+    const filename = launchDate.toISOString().substr(0, 10);
+
+    let file = "";
+    const organizations = await Organization.find({});
+
+    for (const organization of organizations) {
+        file = file.concat(Agreement.titleRecord(organization));
+        const programs = await Program.find({
+            organizationId: organization.id,
+            launchDay: launchDate.getDate(),
+            startDate: {
+                $lte: dateformat(launchDate, "yyyy/mm")
+            },
+            endDate: {
+                $gte: dateformat(launchDate, "yyyy/mm")
+            },
+            isActive: true
         });
-    }).on('error', function (err) { // Handle errors
-        fs.unlink(dest, {
-        }); // Delete the file async. (But we don't check the result)
-        if (cb) cb(err.message);
-    });
+
+        let sumOfMoves = 0, sumOfPayments = 0;
+        for (const program of programs) {
+            file = file.concat(Agreement.moveRecord(program, organization));
+            sumOfMoves++;
+            sumOfPayments += program.sum;
+        }
+        file = file.concat(Agreement.totalRecord(organization, sumOfMoves, sumOfPayments));
+    }
+    file = file.concat(Agreement.endRecord());
+    return { fileName: `קובץ גביה ${dateformat(launchDate, "dd/mm/yy")}.txt`, content: Buffer.from(file, 'utf8') }
 };
