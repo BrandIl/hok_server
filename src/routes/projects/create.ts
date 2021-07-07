@@ -27,14 +27,9 @@ router.post('/api/projects/',
       throw new NotAuthorizedError();
     }
 
-    try {
-      const isExists = await Project.find({ name, organizationId });
-      if (isExists.length !== 0)
-        throw new BadRequestError("Project with this name is already exists. You have to use in a uniqe name");
-    }
-    catch (error) {
-      throw new BadRequestError(error);
-    }
+    const isExists = await Project.find({ name, organizationId }).countDocuments();
+    if (isExists !== 0)
+      throw new BadRequestError("Project with this name is already exists. You have to use in a uniqe name");
 
     try {
       const project = Project.build({ name, organizationId });

@@ -16,7 +16,7 @@ router.put('/api/users/:id',
   [
     body('name')
       .trim()
-      .isLength({ min: 4, max: 50 })
+      .isLength({ min: 2, max: 50 })
       .withMessage('Name must be between 4 and 50 characters'),
     body('email')
       .isEmail()
